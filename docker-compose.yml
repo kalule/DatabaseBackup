@@ -1,0 +1,15 @@
+version: "3.8"
+
+services:
+  databasebackup:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: database-backup-app
+    ports:
+      - "5000:80"
+    volumes:
+      - ./backups:/app/backups
+    environment:
+      ASPNETCORE_ENVIRONMENT: Docker
+    restart: unless-stopped

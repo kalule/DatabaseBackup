@@ -1,0 +1,16 @@
+
+bin/
+obj/
+.vscode/
+*.user
+*.suo
+*.db
+*.mdf
+*.ldf
+*.log
+.env
+Dockerfile
+docker-compose.yml
+*.bak
+*.json
+Logs/
