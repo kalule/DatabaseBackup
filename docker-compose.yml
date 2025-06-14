@@ -9,7 +9,19 @@ services:
     ports:
       - "5000:80"
     volumes:
-      - ./backups:/app/backups
+      - C:\DatabaseBackups:/shared-backups
     environment:
       ASPNETCORE_ENVIRONMENT: Docker
+      ASPNETCORE_URLS: http://0.0.0.0:80 
     restart: unless-stopped
+
+  nginx:
+    image: nginx:latest
+    container_name: nginx-reverse-proxy
+    ports:
+      - "7196:443"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./certs:/etc/nginx/certs:ro
+    depends_on:
+      - databasebackup

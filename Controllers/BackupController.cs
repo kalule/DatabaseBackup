@@ -1,4 +1,5 @@
-﻿using DatabaseBackup.Extensions;
+﻿using DatabaseBackup.Dto;
+using DatabaseBackup.Extensions;
 using DatabaseBackup.Services;
 using Dawn;
 using Microsoft.AspNetCore.Mvc;
@@ -27,30 +28,30 @@ namespace DatabaseBackup.Controllers
 
                 _logger.LogInformation("Backup initiated. Reason: {Reason}", reason);
 
-                var results = await _backupService.CreateBackupAsync(reason);
+                var executedBackups = await _backupService.CreateBackupAsync(reason);
 
-                var responseItems = results.Select(r => new
+                var backupResults = executedBackups .Select(r => new BackupResultDto
                 {
-                    r.Success,
-                    r.FilePath,
-                    r.Message,
-                    r.CompletedAt
+                    Success = r.Success,
+                    FilePath = r.FilePath,
+                    Message = r.Message,
+                    CompletedAt = r.CompletedAt
                 }).ToList();
 
-                if (responseItems.All(r => r.Success))
+                if (backupResults.All(r => r.Success))
                 {
                     _logger.LogInformation("All database backups completed successfully.");
-                    _logger.LogInformation("Backup file paths: {Paths}", responseItems.Select(r => r.FilePath).ToList());
+                    _logger.LogInformation("Backup file paths: {Paths}", backupResults.Select(r => r.FilePath).ToList());
 
-                    return StatusCode(StatusCodes.Status200OK, (new
+                    return StatusCode(StatusCodes.Status200OK, (new BackupResponseDto
                     {
-                        message = "All backups completed successfully.",
-                        backups = responseItems
+                        Message = "All backups completed successfully.",
+                        Backups = backupResults 
                     }));
                 }
                 else
                 {
-                    var failed = responseItems.Where(r => !r.Success).ToList();
+                    var failed = backupResults.Where(r => !r.Success).ToList();
 
                     _logger.LogWarning("Some database backups failed. Failures: {Failures}",
                         failed.Select(f => f.Message).ToList());
@@ -58,7 +59,7 @@ namespace DatabaseBackup.Controllers
                     return StatusCode(StatusCodes.Status500InternalServerError, new
                     {
                         message = "Some backups failed.",
-                        results = responseItems
+                        results = backupResults
                     });
                 }
             }

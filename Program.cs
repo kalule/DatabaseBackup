@@ -13,9 +13,9 @@ builder.Configuration
     .AddEnvironmentVariables();
 
 // Ensure Logs folder exists (optional)
-Directory.CreateDirectory("Logs");
+//Directory.CreateDirectory("Logs");
 
-// 🔧 Correct usage: attach .UseSerilog() to builder.Host
+// Correct usage: attach .UseSerilog() to builder.Host
 builder.Host.UseSerilog((context, services, loggerConfiguration) =>
 {
     loggerConfiguration
@@ -43,6 +43,7 @@ builder.Services.AddHealthChecks();
 
 var app = builder.Build();
 
+//app.Urls.Add("http://0.0.0.0:80");
 // Configure the HTTP request pipeline.
 
 if (app.Environment.IsDevelopment() || app.Environment.IsEnvironment("Docker"))

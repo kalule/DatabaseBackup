@@ -99,7 +99,7 @@ namespace DatabaseBackup.Services
             }
         }
 
-        private DateTime GetDateTime(string? dayValue, string timeValue = null)
+        private DateTime GetDateTime(string? dayValue, string? timeValue = null)
         {
             var now = DateTime.Now;
             if (string.IsNullOrWhiteSpace(timeValue)) return now;
